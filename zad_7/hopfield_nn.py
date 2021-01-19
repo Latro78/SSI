@@ -28,8 +28,8 @@ class HopfieldNN:
         convertedSchemes = np.array(schemes)
         convertedSchemes = np.where(schemes <= 0, -1, 1)
 
-        convertedSchemesV = np.array([c.convertInputArray(np.array(scheme),self.n) for scheme in convertedSchemes])
-
+        #zmiana na tablice jednowymiarową
+        convertedSchemesV = np.array([c.changeArray(np.array(scheme), self.n) for scheme in convertedSchemes])
         # korekcja wag
         for i in range(self.n):
             for j in range(self.n):
@@ -37,31 +37,30 @@ class HopfieldNN:
                     self.weights[i, j] = 0
                 else:
                     for k in range(convertedSchemesV.shape[0]):
-                        self.weights[i, j] += convertedSchemesV[k, i] * convertedSchemesV[k, j]
-        self.weights = self.weights / self.n
+                        self.weights[i, j] += convertedSchemesV[k, i] * convertedSchemesV[k, j] / self.n
 
 ###############################################################
     # korekcja obrazu
     def recognize_image(self, schemes):
-        iterations = 10
-        schemeNrRow = self.matrix.shape[0]
-        schemeNrCol = self.matrix.shape[1]
+        schemeNrRow = self.matrix.shape[0] #5
+        schemeNrCol = self.matrix.shape[1] #5
+        #print(self.matrix)
         image = np.where(np.array(self.matrix) <= 0, -1, 1)
+        #print(image)
         image = image.reshape(self.n)
-
-        imageTmp = np.empty(self.n)
+        #oiprint(image)
+        imageTmp = np.zeros(self.n)
 
         # kroki naprawiajace obraz
         try:
-            l=0
-            while(l < iterations):
-                for i in range(self.n):
-                    for j in range(self.n):
-                        imageTmp[i] += image[i] * self.weights[i, j]
-                    #time.sleep(1)
-                    #print(imageTmp)
-                image = np.where(imageTmp < 0, -1, 1)
-                l+=1
+
+            for i in range(self.n):
+                for j in range(self.n):
+                    imageTmp[i] += image[j] * self.weights[i, j]
+                #time.sleep(1)
+                #print(imageTmp)
+            image = np.where(imageTmp < 0, -1, 1)
+
             image = np.where(image == -1, 0, 1).reshape(schemeNrRow, schemeNrCol)
 
             self.matrix = image

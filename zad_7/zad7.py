@@ -5,11 +5,16 @@ from zad_5 import pokaz_bitmap as bm
 
 obraz = hopfield_nn.HopfieldNN(5,5)
 obraz.set_matrix(np.array(
-    [[1, 0, 0, 0, 1],
-     [0, 1, 1, 1, 0],
+   #[[0,0,0,0,0],
+    #[0,1,0,1,0],
+    #[1,1,0,1,1],
+    #[1,1,0,0,1],
+    #[1,1,0,1,1]]
+    [[1, 1, 1, 1, 1],
+     [1, 0, 1, 0, 1],
      [0, 0, 1, 0, 0],
-     [0, 1, 1, 1, 0],
-     [1, 0, 0, 0, 1]]
+     [0, 0, 1, 1, 0],
+     [0, 0, 1, 0, 0]]
 ))
 obraz.show_matrix()
 obraz.train_image(np.array(s.schemes))
